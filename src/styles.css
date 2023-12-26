@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+.toast-header {
+  border: none !important;
+  border-radius: 3px !important;
+}
+
+.toast-header .btn-close {
+  margin-right: 0;
+}
+
+.toast {
+  /* max-width: 360px; */
+  max-width: fit-content;
+  margin: auto;
+  --bs-toast-border-width: 0 !important;
+  --bs-toast-bg: white !important;
+}

@@ -1,0 +1,22 @@
+.spinner-border {
+  height: 50px;
+  width: 50px;
+}
+
+.spinner {
+  display: block;
+  z-index: 100;
+  color: var(--secondary);
+}
+
+.spinner-container {
+  max-width: 50px;
+  max-height: 50px;
+  position: absolute;
+  top: 0;
+  z-index: 100;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}

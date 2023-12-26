@@ -1,0 +1,18 @@
+.fake-anchor {
+  cursor: pointer;
+}
+
+.navbar-nav {
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .navbar-nav {
+    align-items: flex-start;
+  }
+}
+
+path {
+  fill: black !important;
+  /* fill: white !important; */
+}
