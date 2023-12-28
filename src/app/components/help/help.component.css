@@ -1,0 +1,13 @@
+h1 {
+  background: -webkit-linear-gradient(#8e6e35 50%, #000000 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 90vh;
+  /* max-height: max-content; */
+}

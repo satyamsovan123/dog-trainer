@@ -1,0 +1,41 @@
+<section class="center-container">
+  <div class="content">
+    <form [formGroup]="form">
+      <div class="mb-3 row">
+        <label for="email" class="col-lg-2 col-md-12 col-form-label"
+          >Email</label
+        >
+        <div class="col-lg-10 col-md-12">
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="john@appleseed.com"
+            formControlName="email"
+          />
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="password" class="col-lg-2 col-md-12 col-form-label"
+          >Password</label
+        >
+        <div class="col-lg-10 col-md-12">
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="password"
+            formControlName="password"
+          />
+        </div>
+      </div>
+    </form>
+    <button
+      type="button"
+      class="btn btn-primary btn-md"
+      (click)="handleSignin()"
+    >
+      Sign in
+    </button>
+  </div>
+</section>

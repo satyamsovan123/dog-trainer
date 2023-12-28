@@ -1,0 +1,79 @@
+#dog-head {
+}
+
+svg {
+  width: 100%;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+@keyframes rotateLeaf {
+  from {
+    scale: 1;
+    transform: rotateY(0deg);
+    transform-origin: 0 0;
+  }
+  to {
+    scale: 1.02;
+    transform: rotateY(11deg);
+    transform-origin: 0 0;
+  }
+}
+
+#leaf {
+  animation: rotateLeaf 3s ease-in-out infinite alternate;
+}
+
+@keyframes moveLeftLegs {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(8deg);
+  }
+}
+
+#left-top-leg {
+  animation: moveLeftLegs 1s ease-in-out infinite alternate;
+}
+
+#left-bottom-leg {
+  animation: moveLeftLegs 1s ease-in-out infinite alternate;
+}
+
+@keyframes moveRightLegs {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(5deg);
+  }
+}
+
+#right-top-leg {
+  animation: moveRightLegs 1s ease-in-out infinite alternate;
+}
+
+#right-bottom-leg {
+  animation: moveRightLegs 2s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveHead {
+  from {
+  }
+  to {
+  }
+}
+
+#dog-head {
+  animation: moveHead 4s ease-in-out infinite alternate;
+}
+
+@media (max-width: 1024px) {
+  svg {
+    width: 60%;
+  }
+}

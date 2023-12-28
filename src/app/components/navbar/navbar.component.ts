@@ -11,7 +11,15 @@ export class NavbarComponent implements OnInit {
 
   authenticated: boolean = false;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.commonService.authenticationSubject.subscribe(
+      (authenticationState: boolean) => {
+        this.authenticated = authenticationState;
+      }
+    );
+  }
 
-  handleSignOut() {}
+  handleSignOut() {
+    this.commonService.handleSignOut();
+  }
 }

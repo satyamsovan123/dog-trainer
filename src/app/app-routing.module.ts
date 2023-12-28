@@ -12,9 +12,10 @@ const routes: Routes = [
   {
     path: 'training',
     component: TrainingComponent,
-    canActivate: [authenticationGuard],
+    canActivate: [],
   },
   { path: 'home', component: HomeComponent },
+  { path: '**', component: HomeComponent },
 ];
 
 @NgModule({

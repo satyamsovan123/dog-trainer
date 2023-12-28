@@ -1,0 +1,52 @@
+<section>
+  <p>
+    Please select a course and then select a course name to proceed. We are
+    currently offering "Pup Starter" course at the moment.
+  </p>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          data-bs-auto-close="true"
+        >
+          {{ selectACourse }}
+        </button>
+        <ul class="dropdown-menu">
+          <li *ngFor="let course of courseName">
+            <a class="dropdown-item" (click)="onCourseChange(course)">{{
+              course
+            }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-sm-6">
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+          data-bs-auto-close="true"
+          [disabled]="topics.length === 0"
+        >
+          {{ selectATopic }}
+        </button>
+        <ul class="dropdown-menu">
+          <li *ngFor="let topic of topics">
+            <a class="dropdown-item" (click)="onTopicChange(topic)">{{
+              topic
+            }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <br />
+  <div [ngClass]="{ 'data-area': html.length !== 0 }" [innerHTML]="html"></div>
+</section>
