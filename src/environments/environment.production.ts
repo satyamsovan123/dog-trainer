@@ -1,5 +1,5 @@
 export const environment = {
-  backendUrl: 'http://localhost:3000/api/',
+  backendUrl: 'https://dog-trainer-sever.onrender.com/api/',
   production: true,
   development: false,
 };
