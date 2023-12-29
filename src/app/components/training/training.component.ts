@@ -134,14 +134,6 @@ export class TrainingComponent implements OnInit {
   onCourseChange(courseName: string) {
     this.commonService.updateNotificationMessageSubject('');
 
-    if (courseName === 'Pup Master' || courseName === 'Trick Starter') {
-      const message = responseConstant.COURSE_UNAVAILABLE;
-      this.topics = [];
-      this.commonService.updateNotificationMessageSubject(message);
-      this.selectATopic = `Select a topic`;
-
-      return;
-    }
     this.topics = [];
     this.selectACourse = `Selected course - ${courseName}`;
     this.topics = this.getCourseTopics(courseName);

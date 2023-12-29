@@ -75,9 +75,6 @@ export class AuthenticationComponent {
           const accessToken: string = response.headers.get('Authorization');
           this.commonService.token = accessToken;
           this.commonService.updateAuthenticationSubject(true);
-          this.commonService.updateEmailSubject(authenticationRequest.email);
-          this.commonService.email = authenticationRequest.email;
-
           this.router.navigate(['/training']);
         },
         error: (error: any) => {

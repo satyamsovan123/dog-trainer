@@ -49,6 +49,16 @@ body::before {
   background-repeat: no-repeat !important;
   background-position: center !important;
   z-index: -111;
+  animation: animateBackground 5s ease-in-out infinite alternate;
+}
+
+@keyframes animateBackground {
+  from {
+    transform: translateY(-100px);
+  }
+  to {
+    transform: translateY(0px);
+  }
 }
 
 body {

@@ -15,9 +15,6 @@ export class CommonService {
   authenticationSubject = new BehaviorSubject<boolean>(false);
   authenticationSubject$ = this.authenticationSubject.asObservable();
 
-  emailSubject = new BehaviorSubject<string>('');
-  emailSubject$ = this.emailSubject.asObservable();
-
   notificationMessageSubject = new BehaviorSubject<string>('');
   notificationMessageSubject$ = this.notificationMessageSubject.asObservable();
 
@@ -43,23 +40,9 @@ export class CommonService {
     this.authenticationSubject.next(authenticationState);
   }
 
-  updateEmailSubject(email: string) {
-    this.emailSubject.next(email);
-  }
-
-  set email(email: string) {
-    localStorage.setItem('email', email);
-  }
-
-  get email(): string {
-    return localStorage.getItem('email') ?? '';
-  }
-
   handleSignOut() {
     this.updateAuthenticationSubject(false);
     localStorage.removeItem('token');
-    localStorage.removeItem('email');
-
     this.router.navigate(['/authentication']);
   }
 
@@ -74,11 +57,9 @@ export class CommonService {
   checkSavedCredentials() {
     try {
       const localStorageToken = localStorage.getItem('token');
-      const localStorageEmail = localStorage.getItem('email') ?? '';
 
       if (localStorageToken) {
         this.token = localStorageToken;
-        this.updateEmailSubject(localStorageEmail);
         this.updateAuthenticationSubject(true);
       } else {
         this.handleSignOut();

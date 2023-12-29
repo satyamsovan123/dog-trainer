@@ -14,7 +14,7 @@ import { CommonService } from './services/common.service';
 export class AppComponent implements OnInit, AfterContentChecked {
   title = 'DogTrainer';
   disableBackground: boolean = false;
-
+  footerText: string = '';
   constructor(
     private commonService: CommonService,
     private cd: ChangeDetectorRef

@@ -10,7 +10,6 @@ export class NavbarComponent implements OnInit {
   constructor(private commonService: CommonService) {}
 
   authenticated: boolean = false;
-  email: string = '';
 
   ngOnInit(): void {
     this.commonService.authenticationSubject.subscribe(
@@ -18,11 +17,6 @@ export class NavbarComponent implements OnInit {
         this.authenticated = authenticationState;
       }
     );
-
-    this.commonService.emailSubject.subscribe((email: string) => {
-      console.log(email);
-      this.email = email;
-    });
   }
 
   handleSignOut() {
