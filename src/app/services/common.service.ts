@@ -15,6 +15,9 @@ export class CommonService {
   authenticationSubject = new BehaviorSubject<boolean>(false);
   authenticationSubject$ = this.authenticationSubject.asObservable();
 
+  emailSubject = new BehaviorSubject<string>('');
+  emailSubject$ = this.emailSubject.asObservable();
+
   notificationMessageSubject = new BehaviorSubject<string>('');
   notificationMessageSubject$ = this.notificationMessageSubject.asObservable();
 
@@ -40,26 +43,42 @@ export class CommonService {
     this.authenticationSubject.next(authenticationState);
   }
 
+  updateEmailSubject(email: string) {
+    this.emailSubject.next(email);
+  }
+
+  set email(email: string) {
+    localStorage.setItem('email', email);
+  }
+
+  get email(): string {
+    return localStorage.getItem('email') ?? '';
+  }
+
   handleSignOut() {
     this.updateAuthenticationSubject(false);
-    sessionStorage.removeItem('token');
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+
     this.router.navigate(['/authentication']);
   }
 
   set token(token: string) {
-    sessionStorage.setItem('token', token);
+    localStorage.setItem('token', token);
   }
 
   get token(): string {
-    return sessionStorage.getItem('token') ?? '';
+    return localStorage.getItem('token') ?? '';
   }
 
   checkSavedCredentials() {
     try {
-      const sessionStorageToken = sessionStorage.getItem('token');
+      const localStorageToken = localStorage.getItem('token');
+      const localStorageEmail = localStorage.getItem('email') ?? '';
 
-      if (sessionStorageToken) {
-        this.token = sessionStorageToken;
+      if (localStorageToken) {
+        this.token = localStorageToken;
+        this.updateEmailSubject(localStorageEmail);
         this.updateAuthenticationSubject(true);
       } else {
         this.handleSignOut();

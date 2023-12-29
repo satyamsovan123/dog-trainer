@@ -13,7 +13,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
+      <div class="navbar-nav d-flex">
         <a *ngIf="authenticated" class="nav-link" [routerLink]="'/training'"
           >Training</a
         >
@@ -29,10 +29,11 @@
           *ngIf="authenticated"
           class="nav-link fake-anchor"
           (click)="handleSignOut()"
-          >Sign out</a
+          >Sign out - {{ email }}</a
         >
 
         <a class="nav-link" [routerLink]="'/help'">Help</a>
+        <!-- <a *ngIf="authenticated" class="nav-link last-item">{{ email }}</a> -->
       </div>
     </div>
   </div>

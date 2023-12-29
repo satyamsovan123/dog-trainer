@@ -4,15 +4,23 @@
 
 .navbar-nav {
   align-items: center;
+  flex: auto;
 }
 
 @media (max-width: 767px) {
   .navbar-nav {
     align-items: flex-start;
   }
+  .last-item {
+    margin-right: 100% !important;
+  }
 }
 
 path {
   fill: black !important;
   /* fill: white !important; */
+}
+
+.last-item {
+  margin-left: auto;
 }
