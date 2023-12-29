@@ -136,6 +136,8 @@ export class TrainingComponent implements OnInit {
 
     this.topics = [];
     this.selectACourse = `Selected course - ${courseName}`;
+    this.selectATopic = `Select a topic`;
+    this.html = '';
     this.topics = this.getCourseTopics(courseName);
   }
 

@@ -43,6 +43,7 @@ export class CommonService {
   handleSignOut() {
     this.updateAuthenticationSubject(false);
     localStorage.removeItem('token');
+
     this.router.navigate(['/authentication']);
   }
 
