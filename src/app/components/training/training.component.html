@@ -1,9 +1,19 @@
 <section>
+  <h3 *ngIf="todayIsBirthday">{{ getBirthdayMessage() }}</h3>
+  <br />
   <p>
-    Please select a course and then select a course name to proceed. We are
-    currently offering "Pup Starter" course at the moment.
+    Please select a course and then select a topic to proceed. You can
+    optionally add your pet details
+    <a class="link" [routerLink]="'/pet-profile'">here</a>. However, for
+    simplicity,
+    <span class="assumption"
+      >this application assumes pet is a German Shepherd and his name is
+      Shadow.</span
+    >
+    We are constantly adding new topics, so please bear with us. Thank you for
+    your support.
   </p>
-  <div class="row">
+  <div class="row my-2">
     <div class="col-sm-6">
       <div class="dropdown">
         <button
@@ -40,7 +50,7 @@
         <ul class="dropdown-menu">
           <li *ngFor="let topic of topics">
             <a class="dropdown-item" (click)="onTopicChange(topic)">{{
-              topic
+              sanitizeTopicName(topic)
             }}</a>
           </li>
         </ul>
@@ -48,5 +58,6 @@
     </div>
   </div>
   <br />
+
   <div [ngClass]="{ 'data-area': html.length !== 0 }" [innerHTML]="html"></div>
 </section>

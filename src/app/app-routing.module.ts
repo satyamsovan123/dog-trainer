@@ -5,6 +5,7 @@ import { HelpComponent } from './components/help/help.component';
 import { TrainingComponent } from './components/training/training.component';
 import { HomeComponent } from './components/home/home.component';
 import { authenticationGuard } from './services/authentication.guard';
+import { PetProfileComponent } from './components/pet-profile/pet-profile.component';
 
 const routes: Routes = [
   { path: 'authentication', component: AuthenticationComponent },
@@ -15,6 +16,8 @@ const routes: Routes = [
     canActivate: [],
   },
   { path: 'home', component: HomeComponent },
+  { path: 'pet-profile', component: PetProfileComponent },
+
   { path: '**', component: HomeComponent },
 ];
 

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { PetProfile } from '../models/PetProfile.model';
 
 @Injectable({
   providedIn: 'root',
@@ -43,7 +44,7 @@ export class CommonService {
   handleSignOut() {
     this.updateAuthenticationSubject(false);
     localStorage.removeItem('token');
-
+    localStorage.removeItem('petProfile');
     this.router.navigate(['/authentication']);
   }
 
@@ -67,6 +68,14 @@ export class CommonService {
       }
     } catch (error) {
       this.handleSignOut();
+      this.logger(error);
+    }
+  }
+
+  savePetProfile(petProfile: PetProfile) {
+    try {
+      localStorage.setItem('petProfile', JSON.stringify(petProfile));
+    } catch (error) {
       this.logger(error);
     }
   }

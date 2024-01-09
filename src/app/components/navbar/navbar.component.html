@@ -24,6 +24,9 @@
           [routerLink]="'/authentication'"
           >Sign in</a
         >
+        <a *ngIf="authenticated" class="nav-link" [routerLink]="'/pet-profile'"
+          >Pet profile</a
+        >
 
         <a
           *ngIf="authenticated"

@@ -1,0 +1,67 @@
+<section class="center-container">
+  <div class="content">
+    <form [formGroup]="form">
+      <div class="mb-3 row">
+        <label for="petName" class="col-lg-2 col-md-12 col-form-label"
+          >Pet name</label
+        >
+        <div class="col-lg-10 col-md-12">
+          <input
+            class="form-control"
+            id="petName"
+            placeholder="Shadow"
+            formControlName="petName"
+          />
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="petBreed" class="col-lg-2 col-md-12 col-form-label"
+          >Pet breed</label
+        >
+        <div class="col-lg-10 col-md-12">
+          <input
+            class="form-control"
+            id="petBreed"
+            placeholder="German Shepherd Dog"
+            formControlName="petBreed"
+          />
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="petGender" class="col-lg-2 col-md-12 col-form-label"
+          >Pet gender</label
+        >
+        <div class="col-lg-10 col-md-12">
+          <select
+            class="form-control"
+            id="petGender"
+            placeholder="Male"
+            formControlName="petGender"
+            name="cars"
+            id="cars"
+          >
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="petDOB" class="col-lg-2 col-md-12 col-form-label"
+          >Pet's date of birth</label
+        >
+        <div class="col-lg-10 col-md-12">
+          <input
+            type="date"
+            class="form-control"
+            id="petDOB"
+            placeholder="Male"
+            formControlName="petDOB"
+          />
+        </div>
+      </div>
+    </form>
+    <button type="button" class="btn btn-primary btn-md" (click)="handleSave()">
+      Save
+    </button>
+  </div>
+</section>

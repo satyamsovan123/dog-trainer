@@ -2,8 +2,38 @@
 div {
   width: 10%;
 } */
+
+.link {
+  text-decoration: underline;
+  color: #000000;
+}
 ul {
+  cursor: pointer;
+  margin-top: 1% !important;
   width: 100%;
+  max-height: 55vh;
+  overflow: scroll;
+  scroll-behavior: smooth;
+  padding: 2%;
+  border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar {
+  -webkit-appearance: none;
+  background: 1px solid rgba(0, 0, 0, 1);
+
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(255, 255, 255);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
 }
 
 a,
@@ -17,4 +47,43 @@ button {
   padding: 2%;
   border: 2px solid #000000;
   border-radius: 5px;
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+}
+
+.petbreed {
+  width: 30%;
+  border-bottom: 1px black solid !important;
+}
+
+.petpronoun {
+  border: 0px;
+
+  min-width: 35px !important;
+  background: transparent !important;
+  padding-bottom: 1px;
+  margin-bottom: 0;
+  border-bottom: 1px black solid !important;
+}
+
+.petname {
+  width: 20%;
+  border-bottom: 1px black solid !important;
+}
+
+.save-button {
+  width: 100%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+.assumption {
+  font-weight: bold;
+}
+
+@media (max-width: 767px) {
+  ul {
+    max-height: 55vh;
+  }
 }

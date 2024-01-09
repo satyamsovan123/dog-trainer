@@ -23,6 +23,8 @@
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -43,18 +45,25 @@ body::before {
     rgba(255, 255, 255, 0.7) 70%,
     rgba(142, 110, 53, 0.7) 90%
   );
+
+  /* background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.8029586834733894) 0%,
+    rgba(195, 178, 148, 0) 50%,
+    rgba(142, 110, 53, 0.80015756302521) 100%
+  ); */
   filter: blur(1px);
   opacity: 0.5;
   background-blend-mode: difference;
   background-repeat: no-repeat !important;
   background-position: center !important;
   z-index: -111;
-  animation: animateBackground 5s ease-in-out infinite alternate;
+  animation: animateBackground 4s ease-in-out infinite alternate;
 }
 
 @keyframes animateBackground {
   from {
-    transform: translateY(-100px);
+    transform: translateY(-300px);
   }
   to {
     transform: translateY(0px);
@@ -99,6 +108,7 @@ button:active,
 button:hover,
 label:focus,
 .btn:active,
+select,
 .btn.active {
   outline: 0px;
   outline-width: 0;
@@ -119,7 +129,8 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: black !important;
 }
 
-input {
+input,
+select {
   border-top: 0 !important;
   border-left: 0 !important;
   border-right: 0 !important;

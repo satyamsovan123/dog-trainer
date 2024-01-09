@@ -13,6 +13,7 @@ import { NotificationComponent } from './components/notification/notification.co
 import { AuthenticationInterceptor } from './services/authentication.interceptor';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PetProfileComponent } from './components/pet-profile/pet-profile.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HelpComponent,
     SpinnerComponent,
     NotificationComponent,
+    PetProfileComponent,
   ],
   imports: [
     BrowserModule,
