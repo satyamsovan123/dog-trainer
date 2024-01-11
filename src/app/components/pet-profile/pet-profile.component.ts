@@ -242,7 +242,7 @@ export class PetProfileComponent {
   }
 
   weightFormatter(params: any) {
-    return params.value + ' KG';
+    return params.value + ' KGs';
   }
 
   handleAddWeights() {
