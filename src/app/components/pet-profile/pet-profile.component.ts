@@ -1,4 +1,11 @@
 import { Component } from '@angular/core';
+import {
+  ColDef,
+  GridApi,
+  GridReadyEvent,
+  IRowNode,
+  RefreshCellsParams,
+} from 'ag-grid-community';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription, finalize } from 'rxjs';
@@ -13,9 +20,43 @@ import { CommonService } from 'src/app/services/common.service';
   styleUrls: ['./pet-profile.component.css'],
 })
 export class PetProfileComponent {
+  private gridApi!: GridApi;
+  noRowsTemplate: any;
+  loadingTemplate: any;
   form!: FormGroup;
   subscriptions: Subscription[] = [];
   today = this.getTodayDate();
+  columnDefs: any = [
+    {
+      headerName: 'Date (DD/MM/YYYY)',
+      field: 'date',
+      flex: 0.3,
+      resizable: true,
+      cellDataType: 'dateString',
+      valueFormatter: this.dateFormatter,
+      editable: true,
+    },
+    {
+      headerName: 'Age (Months)',
+      field: 'age',
+      flex: 0.4,
+      resizable: true,
+      cellDataType: 'number',
+      editable: true,
+      valueFormatter: this.ageFormatter,
+    },
+    {
+      headerName: 'Weight (KGs)',
+      field: 'weight',
+      flex: 0.3,
+      resizable: false,
+      cellDataType: 'number',
+      editable: true,
+      valueFormatter: this.weightFormatter,
+    },
+  ];
+
+  rowData: {}[] = [];
 
   constructor(
     private commonService: CommonService,
@@ -39,6 +80,8 @@ export class PetProfileComponent {
   ngOnInit(): void {
     this.form = this.generateForm();
     this.getPetProfile();
+    this.noRowsTemplate = `<span>Woof, woof! No rows to show.</span>`;
+    this.loadingTemplate = `<span>🐾 Loading...</span>`;
   }
 
   generateForm() {
@@ -50,7 +93,7 @@ export class PetProfileComponent {
     });
   }
 
-  handleSave() {
+  handleSavePetProfile() {
     const isFormValid = this.validateForm(this.form);
     if (!isFormValid) {
       const errorMessage = this.checkErrorsInForm(this.form);
@@ -60,6 +103,7 @@ export class PetProfileComponent {
     }
 
     const petProfileRequest: PetProfile = this.form.value;
+    petProfileRequest.petWeight = this.rowData;
 
     this.commonService.logger(petProfileRequest);
 
@@ -80,6 +124,8 @@ export class PetProfileComponent {
           message = response.message
             ? response.message
             : responseConstant.GENERIC_SUCCESS;
+
+          this.ngOnInit();
         },
         error: (error: any) => {
           this.commonService.logger(error);
@@ -116,11 +162,11 @@ export class PetProfileComponent {
 
           this.form.patchValue(response.data.petProfile);
           this.form.patchValue({
-            petDOB: new Date(response.data.petProfile.petDOB)
-              .toISOString()
-              .slice(0, 10),
+            petDOB: this.sanitizeDate(response.data.petProfile.petDOB),
           });
           this.commonService.savePetProfile(response.data.petProfile);
+
+          this.rowData = response.data.petProfile.petWeight;
         },
         error: (error: any) => {
           this.commonService.logger(error);
@@ -174,5 +220,62 @@ export class PetProfileComponent {
     this.subscriptions.forEach((subscription: any) => {
       subscription.unsubscribe();
     });
+  }
+
+  sanitizeDate(date: string) {
+    return new Date(date).toISOString().slice(0, 10);
+  }
+
+  dateFormatter(params: any) {
+    const inputDate = params.value;
+    const [year, month, day] = inputDate.split('-');
+    const formattedDate = new Date(`${year}-${month}-${day}`);
+    const formattedDay = formattedDate.getDate();
+    const formattedMonth = formattedDate.getMonth() + 1; // Months are zero-based, so adding 1
+    const formattedYear = formattedDate.getFullYear();
+    const paddedDay = formattedDay < 10 ? `0${formattedDay}` : formattedDay;
+    const paddedMonth =
+      formattedMonth < 10 ? `0${formattedMonth}` : formattedMonth;
+    const finalFormattedDate = `${paddedDay}/${paddedMonth}/${formattedYear}`;
+
+    return finalFormattedDate;
+  }
+
+  weightFormatter(params: any) {
+    return params.value + ' KG';
+  }
+
+  handleAddWeights() {
+    this.rowData.push({ date: '01-01-1970', weight: 0, age: 0 });
+    this.gridApi.setGridOption('rowData', this.rowData);
+  }
+  onGridReady(params: GridReadyEvent<any>) {
+    this.gridApi = params.api;
+  }
+
+  handleDeleteWeights() {
+    this.rowData = [];
+  }
+
+  ageFormatter(params: any) {
+    let petDetails = JSON.parse(localStorage.getItem('petProfile') ?? '');
+    let d2 = new Date(petDetails.petDOB);
+    let d1 = new Date(params.data['date']);
+
+    const endDate = d1;
+    const startDate = d2;
+
+    const oneDayMs = 1000 * 60 * 60 * 24;
+    const diffMs = endDate.getTime() - startDate.getTime();
+    const diffDays = Math.floor(diffMs / oneDayMs);
+    let years = Math.floor(diffDays / 365);
+    let months = Math.floor(diffDays / 30.44) % 12;
+    let days = diffDays - years * 365 - Math.floor(months * 30.44);
+    if (months <= 0 || days <= 0 || years <= 0) {
+      years = 0;
+      months = 0;
+      days = 0;
+    }
+    return years + ' years, ' + months + ' months, ' + days + ' days';
   }
 }

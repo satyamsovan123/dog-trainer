@@ -1,3 +1,6 @@
+@import "~ag-grid-community/styles//ag-grid.css";
+@import "~ag-grid-community/styles//ag-theme-quartz.css";
+
 .toast-header {
   border: none !important;
   border-radius: 3px !important;
@@ -177,4 +180,18 @@ input[type="number"]::-webkit-outer-spin-button {
   opacity: 0.5;
   pointer-events: none;
   z-index: -11111;
+}
+
+.ag-theme-quartz {
+  --ag-foreground-color: black;
+  --ag-background-color: white;
+  --ag-header-foreground-color: black;
+  --ag-header-background-color: white;
+  --ag-odd-row-background-color: white;
+  --ag-header-column-resize-handle-color: black;
+  --ag-row-hover-color: rgba(142, 110, 53, 0.2);
+
+  --ag-font-size: 16px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans", Ubuntu,
+    "Open Sans", "Helvetica Neue", sans-serif !important;
 }

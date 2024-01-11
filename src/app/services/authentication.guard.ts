@@ -7,7 +7,7 @@ import {
 } from '@angular/router';
 
 export const authenticationGuard: CanActivateFn = (route, state) => {
-  let value: boolean = false;
+  let value: boolean = true;
   const currentPath = route.url[0].path;
 
   if (currentPath === 'authentication') {

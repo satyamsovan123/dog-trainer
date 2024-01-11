@@ -14,6 +14,7 @@ import { AuthenticationInterceptor } from './services/authentication.interceptor
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PetProfileComponent } from './components/pet-profile/pet-profile.component';
+import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { PetProfileComponent } from './components/pet-profile/pet-profile.compon
     PetProfileComponent,
   ],
   imports: [
+    AgGridModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,

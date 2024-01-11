@@ -60,8 +60,86 @@
         </div>
       </div>
     </form>
-    <button type="button" class="btn btn-primary btn-md" (click)="handleSave()">
-      Save
-    </button>
+
+    <div class="mt-5">
+      <div class="accordion" id="accordion-weights">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button
+              class="accordion-button"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseOne"
+              aria-expanded="true"
+              aria-controls="collapseOne"
+            >
+              <h3>
+                {{
+                  this.form.value["petName"].trim()
+                    ? this.form.value["petName"] + "'s weight"
+                    : "Weight"
+                }}
+              </h3>
+            </button>
+          </h2>
+          <div
+            id="collapseOne"
+            class="accordion-collapse collapse"
+            aria-labelledby="headingOne"
+            data-bs-parent="#accordion-weights"
+          >
+            <div class="accordion-body">
+              <p>
+                You can track your pet's weight here. Click on the add button
+                and click on the table to add a date and weight. Click on save
+                button to save the data. You can delete all weight data by
+                clicking on the delete button.
+              </p>
+              <ag-grid-angular
+                class="ag-theme-quartz table"
+                [rowData]="rowData"
+                [columnDefs]="columnDefs"
+                [suppressRowClickSelection]="true"
+                (gridReady)="onGridReady($event)"
+                [overlayLoadingTemplate]="loadingTemplate"
+                [overlayNoRowsTemplate]="noRowsTemplate"
+                [enableCellEditingOnBackspace]="true"
+                [stopEditingWhenCellsLoseFocus]="true"
+              >
+              </ag-grid-angular>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-md"
+                    (click)="handleAddWeights()"
+                  >
+                    Add weight data
+                  </button>
+                </div>
+                <div class="col-sm-6">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-md"
+                    (click)="handleDeleteWeights()"
+                  >
+                    Delete weight data
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary btn-md"
+        (click)="handleSavePetProfile()"
+      >
+        Save
+      </button>
+    </div>
   </div>
 </section>

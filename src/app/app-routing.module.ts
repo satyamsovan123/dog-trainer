@@ -13,10 +13,14 @@ const routes: Routes = [
   {
     path: 'training',
     component: TrainingComponent,
-    canActivate: [],
+    canActivate: [authenticationGuard],
   },
   { path: 'home', component: HomeComponent },
-  { path: 'pet-profile', component: PetProfileComponent },
+  {
+    path: 'pet-profile',
+    component: PetProfileComponent,
+    canActivate: [authenticationGuard],
+  },
 
   { path: '**', component: HomeComponent },
 ];

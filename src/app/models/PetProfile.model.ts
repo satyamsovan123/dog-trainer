@@ -3,4 +3,5 @@ export interface PetProfile {
   petBreed: string;
   petGender: string;
   petDOB: string;
+  petWeight: {}[];
 }

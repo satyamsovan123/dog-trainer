@@ -1,3 +1,34 @@
 select {
   /* padding-left: 1%; */
 }
+
+.table {
+  margin: 2% 0%;
+  width: 100% !important;
+  max-height: fit-content !important;
+  height: 400px !important;
+
+  /* max-height: fit-content !important; */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans", Ubuntu,
+    "Open Sans", "Helvetica Neue", sans-serif !important;
+  font-size: 16px !important;
+  font-weight: normal !important;
+}
+
+button {
+  width: 100%;
+}
+
+.accordion,
+h3 {
+  /* background: black; */
+  color: black !important;
+  margin-bottom: 0;
+}
+
+.accordion-button {
+  background: transparent;
+}
+
+.accordion-button {
+}
