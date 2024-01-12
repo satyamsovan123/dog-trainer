@@ -13,6 +13,7 @@ import { responseConstant } from 'src/app/constants/response.constant';
 import { PetProfile } from 'src/app/models/PetProfile.model';
 import { BackendService } from 'src/app/services/backend.service';
 import { CommonService } from 'src/app/services/common.service';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'app-pet-profile',
@@ -25,24 +26,24 @@ export class PetProfileComponent {
   loadingTemplate: any;
   form!: FormGroup;
   subscriptions: Subscription[] = [];
-  today = this.getTodayDate();
+  today = new Date();
   columnDefs: any = [
     {
-      headerName: 'Date (DD/MM/YYYY)',
+      headerName: 'Date (YYYY-MM-DD)',
       field: 'date',
       flex: 0.3,
       resizable: true,
-      cellDataType: 'dateString',
+      cellDataType: 'date',
       valueFormatter: this.dateFormatter,
       editable: true,
     },
     {
-      headerName: 'Age (Months)',
+      headerName: 'Age',
       field: 'age',
       flex: 0.4,
       resizable: true,
-      cellDataType: 'number',
-      editable: true,
+      cellDataType: 'string',
+      editable: false,
       valueFormatter: this.ageFormatter,
     },
     {
@@ -63,19 +64,6 @@ export class PetProfileComponent {
     private backendService: BackendService,
     private router: Router
   ) {}
-
-  getTodayDate() {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    let mm: any = today.getMonth() + 1; // Months start at 0!
-    let dd: any = today.getDate();
-
-    if (dd < 10) dd = '0' + dd;
-    if (mm < 10) mm = '0' + mm;
-
-    const formattedToday = dd + '/' + mm + '/' + yyyy;
-    return formattedToday;
-  }
 
   ngOnInit(): void {
     this.form = this.generateForm();
@@ -160,15 +148,24 @@ export class PetProfileComponent {
             ? response.message
             : responseConstant.GENERIC_SUCCESS;
 
-          this.form.patchValue(response.data.petProfile);
           this.form.patchValue({
-            petDOB: this.sanitizeDate(response.data.petProfile.petDOB),
+            petDOB: DateTime.fromISO(response.data.petProfile.petDOB).toFormat(
+              'yyyy-MM-dd'
+            ),
+
+            petGender: response.data.petProfile.petGender,
+            petBreed: response.data.petProfile.petBreed,
+            petName: response.data.petProfile.petName,
           });
           this.commonService.savePetProfile(response.data.petProfile);
 
           this.rowData = response.data.petProfile.petWeight;
         },
         error: (error: any) => {
+          if (error.status === 401) {
+            this.commonService.handleSignOut();
+            return;
+          }
           this.commonService.logger(error);
 
           if (error.error && error.error.message) {
@@ -222,23 +219,12 @@ export class PetProfileComponent {
     });
   }
 
-  sanitizeDate(date: string) {
-    return new Date(date).toISOString().slice(0, 10);
-  }
-
   dateFormatter(params: any) {
-    const inputDate = params.value;
-    const [year, month, day] = inputDate.split('-');
-    const formattedDate = new Date(`${year}-${month}-${day}`);
-    const formattedDay = formattedDate.getDate();
-    const formattedMonth = formattedDate.getMonth() + 1; // Months are zero-based, so adding 1
-    const formattedYear = formattedDate.getFullYear();
-    const paddedDay = formattedDay < 10 ? `0${formattedDay}` : formattedDay;
-    const paddedMonth =
-      formattedMonth < 10 ? `0${formattedMonth}` : formattedMonth;
-    const finalFormattedDate = `${paddedDay}/${paddedMonth}/${formattedYear}`;
-
-    return finalFormattedDate;
+    return (
+      DateTime.fromJSDate(new Date(params.value))
+        // .toFormat('dd/MM/yyyy');
+        .toFormat('yyyy-MM-dd')
+    );
   }
 
   weightFormatter(params: any) {
@@ -246,7 +232,11 @@ export class PetProfileComponent {
   }
 
   handleAddWeights() {
-    this.rowData.push({ date: '01-01-1970', weight: 0, age: 0 });
+    this.rowData.push({
+      date: DateTime.fromJSDate(new Date()).toFormat('yyyy-MM-dd'),
+      weight: 0,
+      age: `${0} years, ${0} months, ${0} days`,
+    });
     this.gridApi.setGridOption('rowData', this.rowData);
   }
   onGridReady(params: GridReadyEvent<any>) {
@@ -259,23 +249,29 @@ export class PetProfileComponent {
 
   ageFormatter(params: any) {
     let petDetails = JSON.parse(localStorage.getItem('petProfile') ?? '');
-    let d2 = new Date(petDetails.petDOB);
-    let d1 = new Date(params.data['date']);
 
-    const endDate = d1;
-    const startDate = d2;
+    let petDOB = DateTime.fromJSDate(new Date(petDetails.petDOB));
 
-    const oneDayMs = 1000 * 60 * 60 * 24;
-    const diffMs = endDate.getTime() - startDate.getTime();
-    const diffDays = Math.floor(diffMs / oneDayMs);
-    let years = Math.floor(diffDays / 365);
-    let months = Math.floor(diffDays / 30.44) % 12;
-    let days = diffDays - years * 365 - Math.floor(months * 30.44);
-    if (months <= 0 || days <= 0 || years <= 0) {
-      years = 0;
-      months = 0;
-      days = 0;
+    let rowDate = DateTime.fromJSDate(new Date(params.data['date']));
+
+    const age: any = rowDate
+      .diff(petDOB, ['years', 'months', 'days'])
+      .toObject();
+
+    if (age.years < 0 || age.months < 0 || age.days < 0) {
+      age.years = 0;
+      age.months = 0;
+      age.days = 0;
     }
-    return years + ' years, ' + months + ' months, ' + days + ' days';
+    const ageString =
+      Math.ceil(age.years ?? 0) +
+      ' years, ' +
+      Math.ceil(age.months ?? 0) +
+      ' months, ' +
+      Math.ceil(age.days ?? 0) +
+      ' days';
+
+    params.data['age'] = ageString;
+    return ageString;
   }
 }
