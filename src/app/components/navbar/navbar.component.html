@@ -14,28 +14,48 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav d-flex">
-        <a *ngIf="authenticated" class="nav-link" [routerLink]="'/training'"
+        <a
+          *ngIf="authenticated"
+          class="nav-link"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup"
+          [routerLink]="'/training'"
           >Training</a
         >
 
         <a
           *ngIf="!authenticated"
           class="nav-link"
+          data-bs-target="#navbarNavAltMarkup"
+          data-bs-toggle="collapse"
           [routerLink]="'/authentication'"
           >Sign in</a
         >
-        <a *ngIf="authenticated" class="nav-link" [routerLink]="'/pet-profile'"
+        <a
+          *ngIf="authenticated"
+          class="nav-link"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup"
+          [routerLink]="'/pet-profile'"
           >Pet profile</a
         >
 
         <a
           *ngIf="authenticated"
           class="nav-link fake-anchor"
+          data-bs-target="#navbarNavAltMarkup"
+          data-bs-toggle="collapse"
           (click)="handleSignOut()"
           >Sign out</a
         >
 
-        <a class="nav-link" [routerLink]="'/help'">Help</a>
+        <a
+          class="nav-link"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup"
+          [routerLink]="'/help'"
+          >Help</a
+        >
       </div>
     </div>
   </div>

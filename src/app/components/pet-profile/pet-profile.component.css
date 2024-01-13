@@ -32,3 +32,12 @@ h3 {
 
 .accordion-button {
 }
+
+.chart {
+  margin-top: 6%;
+  margin-bottom: 3%;
+}
+
+canvas {
+  overflow-y: scroll;
+}

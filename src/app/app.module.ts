@@ -15,6 +15,8 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PetProfileComponent } from './components/pet-profile/pet-profile.component';
 import { AgGridModule } from 'ag-grid-angular';
+import { AgChartsAngularModule } from 'ag-charts-angular';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { AgGridModule } from 'ag-grid-angular';
     PetProfileComponent,
   ],
   imports: [
+    NgChartsModule,
     AgGridModule,
+    AgChartsAngularModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,

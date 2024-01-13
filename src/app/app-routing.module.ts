@@ -8,7 +8,11 @@ import { authenticationGuard } from './services/authentication.guard';
 import { PetProfileComponent } from './components/pet-profile/pet-profile.component';
 
 const routes: Routes = [
-  { path: 'authentication', component: AuthenticationComponent },
+  {
+    path: 'authentication',
+    component: AuthenticationComponent,
+    canActivate: [authenticationGuard],
+  },
   { path: 'help', component: HelpComponent },
   {
     path: 'training',

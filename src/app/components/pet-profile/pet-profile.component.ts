@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, HostListener } from '@angular/core';
 import {
   ColDef,
   GridApi,
@@ -6,6 +6,7 @@ import {
   IRowNode,
   RefreshCellsParams,
 } from 'ag-grid-community';
+
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription, finalize } from 'rxjs';
@@ -14,6 +15,12 @@ import { PetProfile } from 'src/app/models/PetProfile.model';
 import { BackendService } from 'src/app/services/backend.service';
 import { CommonService } from 'src/app/services/common.service';
 import { DateTime } from 'luxon';
+import { DashboardChartConfiguration } from 'src/app/configs/chart.config';
+
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+
+import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 
 @Component({
   selector: 'app-pet-profile',
@@ -22,6 +29,7 @@ import { DateTime } from 'luxon';
 })
 export class PetProfileComponent {
   private gridApi!: GridApi;
+
   noRowsTemplate: any;
   loadingTemplate: any;
   form!: FormGroup;
@@ -58,6 +66,19 @@ export class PetProfileComponent {
   ];
 
   rowData: {}[] = [];
+  selectedRows: {}[] = [];
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+
+  public chartOptions: ChartConfiguration['options'] =
+    DashboardChartConfiguration;
+
+  public chartType: ChartType = 'bar';
+
+  public chartPlugins: [any] = [DataLabelsPlugin];
+
+  public chartData: ChartData<'bar'> = {
+    datasets: [],
+  };
 
   constructor(
     private commonService: CommonService,
@@ -68,7 +89,7 @@ export class PetProfileComponent {
   ngOnInit(): void {
     this.form = this.generateForm();
     this.getPetProfile();
-    this.noRowsTemplate = `<span>Woof, woof! No rows to show.</span>`;
+    this.noRowsTemplate = `<span>Woof, woof! No data to show.</span>`;
     this.loadingTemplate = `<span>🐾 Loading...</span>`;
   }
 
@@ -160,6 +181,10 @@ export class PetProfileComponent {
           this.commonService.savePetProfile(response.data.petProfile);
 
           this.rowData = response.data.petProfile.petWeight;
+          this.rowData.forEach((row: any) => {
+            row.age = this.ageFormatter({ data: row });
+          });
+          this.generateGraphData();
         },
         error: (error: any) => {
           if (error.status === 401) {
@@ -238,13 +263,23 @@ export class PetProfileComponent {
       age: `${0} years, ${0} months, ${0} days`,
     });
     this.gridApi.setGridOption('rowData', this.rowData);
+    this.generateGraphData();
   }
+
   onGridReady(params: GridReadyEvent<any>) {
     this.gridApi = params.api;
   }
 
   handleDeleteWeights() {
-    this.rowData = [];
+    if (this.selectedRows.length > 0) {
+      const unselectedRows = this.rowData.filter((row: any) => {
+        return !this.selectedRows.includes(row);
+      });
+      this.rowData = unselectedRows;
+    } else {
+      this.rowData = [];
+    }
+    this.generateGraphData();
   }
 
   ageFormatter(params: any) {
@@ -263,15 +298,86 @@ export class PetProfileComponent {
       age.months = 0;
       age.days = 0;
     }
-    const ageString =
-      Math.ceil(age.years ?? 0) +
+
+    let ageString = '';
+    if (age.years === 0) {
+      ageString =
+        Math.ceil(age.months) + ' months, ' + Math.ceil(age.days) + ' days';
+    } else if (age.months === 0) {
+      ageString =
+        Math.ceil(age.years) + ' years, ' + Math.ceil(age.days) + ' days';
+    } else if (age.days === 0) {
+      ageString =
+        Math.ceil(age.years) + ' years, ' + Math.ceil(age.months) + ' months';
+    } else {
+      ageString =
+        Math.ceil(age.years) +
+        ' years, ' +
+        Math.ceil(age.months) +
+        ' months, ' +
+        Math.ceil(age.days) +
+        ' days';
+    }
+
+    ageString =
+      Math.ceil(age.years) +
       ' years, ' +
-      Math.ceil(age.months ?? 0) +
+      Math.ceil(age.months) +
       ' months, ' +
-      Math.ceil(age.days ?? 0) +
+      Math.ceil(age.days) +
       ' days';
 
     params.data['age'] = ageString;
     return ageString;
+  }
+
+  onSelectionChanged(event: any) {
+    const selectedRows = event.api
+      .getSelectedNodes()
+      .map((node: any) => node.data);
+    this.selectedRows = selectedRows;
+  }
+
+  onCellEditingStopped(event: any) {
+    this.generateGraphData();
+  }
+
+  generateGraphData(): void {
+    const yAxisWeightData: any = [];
+
+    const xAxisDateData: any = [];
+
+    interface TempData {
+      date: string;
+      weight: number;
+      age: string;
+    }
+
+    const tempData: TempData[] | any = JSON.parse(JSON.stringify(this.rowData));
+
+    tempData.sort(
+      (a: any, b: any) =>
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+
+    this.rowData.forEach((row: any) => {
+      yAxisWeightData.push(Number(row.weight));
+      xAxisDateData.push(
+        DateTime.fromJSDate(new Date(row.date)).toFormat('yyyy-MM-dd')
+      );
+    });
+
+    const data: ChartData<'bar'> = {
+      labels: xAxisDateData,
+      datasets: [
+        {
+          data: yAxisWeightData,
+          backgroundColor: '#000000',
+          maxBarThickness: 100,
+          hoverBackgroundColor: '#000000',
+        },
+      ],
+    };
+    this.chartData = data;
   }
 }
