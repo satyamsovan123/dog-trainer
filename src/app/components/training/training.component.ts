@@ -5,6 +5,8 @@ import { Subscription, finalize } from 'rxjs';
 import { responseConstant } from 'src/app/constants/response.constant';
 import { CourseDetail } from 'src/app/models/CourseDetail.model';
 import { Data } from 'src/app/models/Data.model';
+import { LastTopicRead } from 'src/app/models/LastTopicRead.model';
+import { Notification } from 'src/app/models/Notification.model';
 import { BackendService } from 'src/app/services/backend.service';
 import { CommonService } from 'src/app/services/common.service';
 
@@ -23,6 +25,14 @@ export class TrainingComponent implements OnInit {
   selectACourse: string = 'Select a course';
   selectATopic: string = 'Select a topic';
   todayIsBirthday: boolean = false;
+  lastTopicRead: LastTopicRead = {
+    courseName: '',
+    topic: '',
+  };
+  lastTopicReadBackup: LastTopicRead = {
+    courseName: '',
+    topic: '',
+  };
 
   constructor(
     private http: HttpClient,
@@ -32,27 +42,30 @@ export class TrainingComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.fetchCourseDetails();
+    this.getCourseDetails();
     // this.fakeHTML();
   }
 
-  fetchHTML(title: string) {
+  getHTML(title: string) {
     this.commonService.updateSpinnerSubject(true);
-    let message: string = '';
     const dataRequest: Data = { title: title };
+    const notification: Notification = {
+      message: '',
+      type: 0,
+    };
 
     const subscription = this.backendService
-      .fetchHTML(dataRequest)
+      .getHTML(dataRequest)
       .pipe(
         finalize(() => {
           this.commonService.updateSpinnerSubject(false);
-          this.commonService.updateNotificationMessageSubject(message);
+          this.commonService.updateNotificationSubject(notification);
         })
       )
       .subscribe({
         next: (response: any) => {
           this.commonService.logger(response);
-          message = response.message
+          notification.message = response.message
             ? response.message
             : responseConstant.GENERIC_SUCCESS;
           const data = this.sanitizeHTML(response.data.data);
@@ -60,6 +73,8 @@ export class TrainingComponent implements OnInit {
           this.html = this.sanitizer.bypassSecurityTrustHtml(data);
         },
         error: (error: any) => {
+          notification.type = 1;
+
           if (error.status === 401) {
             this.commonService.handleSignOut();
             return;
@@ -67,9 +82,9 @@ export class TrainingComponent implements OnInit {
           this.commonService.logger(error);
 
           if (error.error && error.error.message) {
-            message = error.error.message;
+            notification.message = error.error.message;
           } else {
-            message = responseConstant.GENERIC_ERROR;
+            notification.message = responseConstant.GENERIC_ERROR;
           }
         },
       });
@@ -77,22 +92,27 @@ export class TrainingComponent implements OnInit {
     this.subscriptions.push(subscription);
   }
 
-  fetchCourseDetails() {
+  getCourseDetails() {
     this.commonService.updateSpinnerSubject(true);
-    let message: string = '';
+
+    const notification: Notification = {
+      message: '',
+      type: 0,
+    };
 
     const subscription = this.backendService
-      .fetchCourseDetails()
+      .getCourseDetails()
       .pipe(
         finalize(() => {
           this.commonService.updateSpinnerSubject(false);
-          this.commonService.updateNotificationMessageSubject(message);
+          this.commonService.updateNotificationSubject(notification);
+          this.getPetProfile();
         })
       )
       .subscribe({
         next: (response: any) => {
           this.commonService.logger(response);
-          message = response.message
+          notification.message = response.message
             ? response.message
             : responseConstant.GENERIC_SUCCESS;
           this.courseDetails = response.data;
@@ -100,11 +120,11 @@ export class TrainingComponent implements OnInit {
           response.data.forEach((course: CourseDetail) => {
             this.courseName.push(course.courseName);
           });
-
           this.sortList(this.courseName);
-          this.getPetProfile();
         },
         error: (error: any) => {
+          notification.type = 1;
+
           if (error.status === 401) {
             this.commonService.handleSignOut();
             return;
@@ -112,9 +132,9 @@ export class TrainingComponent implements OnInit {
           this.commonService.logger(error);
 
           if (error.error && error.error.message) {
-            message = error.error.message;
+            notification.message = error.error.message;
           } else {
-            message = responseConstant.GENERIC_ERROR;
+            notification.message = responseConstant.GENERIC_ERROR;
           }
         },
       });
@@ -136,6 +156,7 @@ export class TrainingComponent implements OnInit {
     });
     return this.sortList(topics);
   }
+
   ngOnDestroy() {
     this.subscriptions.forEach((subscription: any) => {
       subscription.unsubscribe();
@@ -143,20 +164,28 @@ export class TrainingComponent implements OnInit {
   }
 
   onCourseChange(courseName: string) {
-    this.commonService.updateNotificationMessageSubject('');
+    this.commonService.updateNotificationSubject({ message: '', type: 0 });
 
     this.topics = [];
     this.selectACourse = `Selected course - ${courseName}`;
     this.selectATopic = `Select a topic`;
     this.html = '';
     this.topics = this.getCourseTopics(courseName);
+    this.lastTopicRead.courseName = courseName;
   }
 
   onTopicChange(topic: string) {
-    this.commonService.updateNotificationMessageSubject('');
+    this.commonService.updateNotificationSubject({ message: '', type: 0 });
     this.selectATopic = `Selected topic - ${this.sanitizeTopicName(topic)}`;
     this.html = '';
-    this.fetchHTML(topic);
+    this.lastTopicRead.topic = topic;
+    this.getHTML(topic);
+    if (
+      JSON.stringify(this.lastTopicRead) !==
+      JSON.stringify(this.lastTopicReadBackup)
+    ) {
+      this.updateLastTopicRead();
+    }
   }
 
   fakeHTML() {
@@ -183,20 +212,25 @@ export class TrainingComponent implements OnInit {
 
   getPetProfile() {
     this.commonService.updateSpinnerSubject(true);
-    let message: string = '';
+
+    const notification: Notification = {
+      message: '',
+      type: 0,
+    };
 
     const subscription = this.backendService
       .getPetProfile()
       .pipe(
         finalize(() => {
           this.commonService.updateSpinnerSubject(false);
-          this.commonService.updateNotificationMessageSubject(message);
+          this.commonService.updateNotificationSubject(notification);
+          this.getLastTopicRead();
         })
       )
       .subscribe({
         next: (response: any) => {
           this.commonService.logger(response);
-          message = response.message
+          notification.message = response.message
             ? response.message
             : responseConstant.GENERIC_SUCCESS;
           this.commonService.savePetProfile(response.data.petProfile);
@@ -211,11 +245,12 @@ export class TrainingComponent implements OnInit {
           }
         },
         error: (error: any) => {
+          notification.type = 1;
           this.commonService.logger(error);
           if (error.error && error.error.message) {
-            message = error.error.message;
+            notification.message = error.error.message;
           } else {
-            message = responseConstant.GENERIC_ERROR;
+            notification.message = responseConstant.GENERIC_ERROR;
           }
         },
       });
@@ -258,8 +293,94 @@ export class TrainingComponent implements OnInit {
 
     return sanitizedHTML;
   }
+
   getBirthdayMessage() {
     const petProfile = JSON.parse(localStorage.getItem('petProfile') ?? '{}');
     return `Happy Birthday ${petProfile.petName}!`;
+  }
+
+  getLastTopicRead() {
+    this.commonService.updateSpinnerSubject(true);
+    const notification: Notification = {
+      message: '',
+      type: 0,
+    };
+
+    const subscription = this.backendService
+      .getLastTopicRead()
+      .pipe(
+        finalize(() => {
+          this.commonService.updateSpinnerSubject(false);
+          this.commonService.updateNotificationSubject(notification);
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.commonService.logger(response);
+          notification.message = response.message
+            ? response.message
+            : responseConstant.GENERIC_SUCCESS;
+          this.lastTopicRead = response.data.lastTopicRead;
+          if (
+            this.lastTopicRead.courseName !== '' &&
+            this.lastTopicRead.topic !== ''
+          ) {
+            this.lastTopicReadBackup = JSON.parse(
+              JSON.stringify(this.lastTopicRead)
+            );
+            this.onCourseChange(this.lastTopicRead.courseName);
+            this.onTopicChange(this.lastTopicRead.topic);
+          }
+        },
+        error: (error: any) => {
+          notification.type = 1;
+
+          this.commonService.logger(error);
+          if (error.error && error.error.message) {
+            notification.message = error.error.message;
+          } else {
+            notification.message = responseConstant.GENERIC_ERROR;
+          }
+        },
+      });
+
+    this.subscriptions.push(subscription);
+  }
+
+  updateLastTopicRead() {
+    this.commonService.updateSpinnerSubject(true);
+
+    const notification: Notification = {
+      message: '',
+      type: 0,
+    };
+    const subscription = this.backendService
+      .updateLastTopicRead(this.lastTopicRead)
+      .pipe(
+        finalize(() => {
+          this.commonService.updateSpinnerSubject(false);
+          this.commonService.updateNotificationSubject(notification);
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.commonService.logger(response);
+          notification.message = response.message
+            ? response.message
+            : responseConstant.GENERIC_SUCCESS;
+        },
+        error: (error: any) => {
+          this.commonService.logger(error);
+          notification.type = 1;
+
+          if (error.error && error.error.message) {
+            notification.message = error.error.message;
+          } else {
+            notification.message = responseConstant.GENERIC_ERROR;
+          }
+        },
+      });
+
+    this.subscriptions.push(subscription);
   }
 }

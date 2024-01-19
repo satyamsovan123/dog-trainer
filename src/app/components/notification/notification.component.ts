@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Notification } from 'src/app/models/Notification.model';
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
@@ -7,18 +8,24 @@ import { CommonService } from 'src/app/services/common.service';
   styleUrls: ['./notification.component.css'],
 })
 export class NotificationComponent {
-  notificationMessage: string = '';
+  notification: Notification = {
+    message: '',
+    type: 0,
+  };
   constructor(private commonService: CommonService) {}
 
   ngOnInit(): void {
-    this.commonService.notificationMessageSubject$.subscribe(
-      (notificationMessage: string) => {
-        this.notificationMessage = notificationMessage;
+    this.commonService.notificationSubject$.subscribe(
+      (notification: Notification) => {
+        this.notification = notification;
       }
     );
   }
 
   clearNotification() {
-    this.commonService.updateNotificationMessageSubject('');
+    this.commonService.updateNotificationSubject({
+      message: '',
+      type: 0,
+    });
   }
 }

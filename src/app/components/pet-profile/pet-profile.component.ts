@@ -6,6 +6,8 @@ import {
   IRowNode,
   RefreshCellsParams,
 } from 'ag-grid-community';
+import { AngularDeviceInformationService } from 'angular-device-information';
+import { BaseChartDirective } from 'ng2-charts';
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -18,9 +20,9 @@ import { DateTime } from 'luxon';
 import { DashboardChartConfiguration } from 'src/app/configs/chart.config';
 
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
 
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
+import { Notification } from 'src/app/models/Notification.model';
 
 @Component({
   selector: 'app-pet-profile',
@@ -67,7 +69,6 @@ export class PetProfileComponent {
 
   rowData: {}[] = [];
   selectedRows: {}[] = [];
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
   public chartOptions: ChartConfiguration['options'] =
     DashboardChartConfiguration;
@@ -79,12 +80,17 @@ export class PetProfileComponent {
   public chartData: ChartData<'bar'> = {
     datasets: [],
   };
+  screenHeight: any;
+  screenWidth: any;
 
   constructor(
     private commonService: CommonService,
     private backendService: BackendService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private deviceInformationService: AngularDeviceInformationService
+  ) {
+    this.onResize();
+  }
 
   ngOnInit(): void {
     this.form = this.generateForm();
@@ -102,12 +108,18 @@ export class PetProfileComponent {
     });
   }
 
-  handleSavePetProfile() {
+  handleUpdatePetProfile() {
     const isFormValid = this.validateForm(this.form);
+    const notification: Notification = {
+      message: '',
+      type: 0,
+    };
     if (!isFormValid) {
       const errorMessage = this.checkErrorsInForm(this.form);
+      notification.message = errorMessage;
+      notification.type = 1;
       this.commonService.logger(errorMessage);
-      this.commonService.updateNotificationMessageSubject(errorMessage);
+      this.commonService.updateNotificationSubject(notification);
       return;
     }
 
@@ -120,11 +132,11 @@ export class PetProfileComponent {
     let message: string = '';
 
     const subscription = this.backendService
-      .savePetProfile(petProfileRequest)
+      .updatePetProfile(petProfileRequest)
       .pipe(
         finalize(() => {
           this.commonService.updateSpinnerSubject(false);
-          this.commonService.updateNotificationMessageSubject(message);
+          this.commonService.updateNotificationSubject(notification);
         })
       )
       .subscribe({
@@ -137,6 +149,7 @@ export class PetProfileComponent {
           this.ngOnInit();
         },
         error: (error: any) => {
+          notification.type = 1;
           this.commonService.logger(error);
 
           if (error.error && error.error.message) {
@@ -152,20 +165,24 @@ export class PetProfileComponent {
 
   getPetProfile() {
     this.commonService.updateSpinnerSubject(true);
-    let message: string = '';
+
+    const notification: Notification = {
+      message: '',
+      type: 0,
+    };
 
     const subscription = this.backendService
       .getPetProfile()
       .pipe(
         finalize(() => {
           this.commonService.updateSpinnerSubject(false);
-          this.commonService.updateNotificationMessageSubject(message);
+          this.commonService.updateNotificationSubject(notification);
         })
       )
       .subscribe({
         next: (response: any) => {
           this.commonService.logger(response);
-          message = response.message
+          notification.message = response.message
             ? response.message
             : responseConstant.GENERIC_SUCCESS;
 
@@ -187,6 +204,7 @@ export class PetProfileComponent {
           this.generateGraphData();
         },
         error: (error: any) => {
+          notification.type = 1;
           if (error.status === 401) {
             this.commonService.handleSignOut();
             return;
@@ -194,9 +212,9 @@ export class PetProfileComponent {
           this.commonService.logger(error);
 
           if (error.error && error.error.message) {
-            message = error.error.message;
+            notification.message = error.error.message;
           } else {
-            message = responseConstant.GENERIC_ERROR;
+            notification.message = responseConstant.GENERIC_ERROR;
           }
         },
       });
@@ -379,5 +397,16 @@ export class PetProfileComponent {
       ],
     };
     this.chartData = data;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(): boolean {
+    this.screenHeight = window.innerHeight;
+    this.screenWidth = window.innerWidth;
+    if (window.innerWidth < 500) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

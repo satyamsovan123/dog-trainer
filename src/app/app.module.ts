@@ -15,7 +15,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PetProfileComponent } from './components/pet-profile/pet-profile.component';
 import { AgGridModule } from 'ag-grid-angular';
-import { AgChartsAngularModule } from 'ag-charts-angular';
+import { AngularDeviceInformationService } from 'angular-device-information';
 import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
@@ -31,16 +31,16 @@ import { NgChartsModule } from 'ng2-charts';
     PetProfileComponent,
   ],
   imports: [
-    NgChartsModule,
     AgGridModule,
-    AgChartsAngularModule,
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    NgChartsModule.forRoot(),
   ],
   providers: [
+    AngularDeviceInformationService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthenticationInterceptor,

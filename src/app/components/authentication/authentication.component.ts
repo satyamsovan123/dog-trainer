@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Subscription, finalize } from 'rxjs';
 import { responseConstant } from 'src/app/constants/response.constant';
 import { Authentication } from 'src/app/models/Authentication.model';
+import { Notification } from 'src/app/models/Notification.model';
 import { BackendService } from 'src/app/services/backend.service';
 import { CommonService } from 'src/app/services/common.service';
 
@@ -42,11 +43,18 @@ export class AuthenticationComponent {
 
   handleSignin() {
     const isFormValid = this.validateForm(this.form);
-
+    const notification: Notification = {
+      message: '',
+      type: 0,
+    };
     if (!isFormValid) {
       const errorMessage = this.checkErrorsInForm(this.form);
+
+      notification.message = errorMessage;
+      notification.type = 1;
+
       this.commonService.logger(errorMessage);
-      this.commonService.updateNotificationMessageSubject(errorMessage);
+      this.commonService.updateNotificationSubject(notification);
       return;
     }
 
@@ -55,20 +63,19 @@ export class AuthenticationComponent {
     this.commonService.logger(authenticationRequest);
 
     this.commonService.updateSpinnerSubject(true);
-    let message: string = '';
 
     const subscription = this.backendService
       .authentication(authenticationRequest)
       .pipe(
         finalize(() => {
           this.commonService.updateSpinnerSubject(false);
-          this.commonService.updateNotificationMessageSubject(message);
+          this.commonService.updateNotificationSubject(notification);
         })
       )
       .subscribe({
         next: (response: any) => {
           this.commonService.logger(response);
-          message = response.body.message
+          notification.message = response.body.message
             ? response.body.message
             : responseConstant.GENERIC_SUCCESS;
 
@@ -78,12 +85,13 @@ export class AuthenticationComponent {
           this.router.navigate(['/training']);
         },
         error: (error: any) => {
+          notification.type = 1;
           this.commonService.logger(error);
 
           if (error.error && error.error.message) {
-            message = error.error.message;
+            notification.message = error.error.message;
           } else {
-            message = responseConstant.GENERIC_ERROR;
+            notification.message = responseConstant.GENERIC_ERROR;
           }
         },
       });

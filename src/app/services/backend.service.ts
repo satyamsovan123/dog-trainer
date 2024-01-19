@@ -6,6 +6,7 @@ import { PetProfile } from '../models/PetProfile.model';
 import { Authentication } from '../models/Authentication.model';
 import { apiConstant } from '../constants/api.constant';
 import { Data } from '../models/Data.model';
+import { LastTopicRead } from '../models/LastTopicRead.model';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,7 @@ export class BackendService {
     );
   }
 
-  savePetProfile(data: PetProfile) {
+  updatePetProfile(data: PetProfile) {
     return this.httpClient.post(
       `${this.backendUrl}${apiConstant.UPDATE_PET_PROFILE}`,
       data
@@ -41,14 +42,27 @@ export class BackendService {
     );
   }
 
-  fetchHTML(data: Data) {
+  getLastTopicRead() {
+    return this.httpClient.get(
+      `${this.backendUrl}${apiConstant.GET_LAST_TOPIC_READ}`
+    );
+  }
+
+  updateLastTopicRead(data: LastTopicRead) {
+    return this.httpClient.post(
+      `${this.backendUrl}${apiConstant.UPDATE_LAST_TOPIC_READ}`,
+      data
+    );
+  }
+
+  getHTML(data: Data) {
     return this.httpClient.post(
       `${this.backendUrl}${apiConstant.GET_DATA_BY_TITLE}`,
       data
     );
   }
 
-  fetchCourseDetails() {
+  getCourseDetails() {
     return this.httpClient.get(
       `${this.backendUrl}${apiConstant.GET_COURSE_DETAILS}`
     );

@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { PetProfile } from '../models/PetProfile.model';
+import { Notification } from '../models/Notification.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +17,11 @@ export class CommonService {
   authenticationSubject = new BehaviorSubject<boolean>(false);
   authenticationSubject$ = this.authenticationSubject.asObservable();
 
-  notificationMessageSubject = new BehaviorSubject<string>('');
-  notificationMessageSubject$ = this.notificationMessageSubject.asObservable();
+  notificationSubject = new BehaviorSubject<Notification>({
+    message: '',
+    type: 0,
+  });
+  notificationSubject$ = this.notificationSubject.asObservable();
 
   logger(data: any) {
     if (environment.production) {
@@ -30,10 +34,16 @@ export class CommonService {
     this.spinnerSubject.next(spinnerState);
   }
 
-  updateNotificationMessageSubject(message: string) {
-    this.notificationMessageSubject.next(message);
+  updateNotificationSubject(notification: Notification) {
+    if (notification.type === 0) {
+      // return;
+    }
+    this.notificationSubject.next(notification);
     setTimeout(() => {
-      this.notificationMessageSubject.next('');
+      this.notificationSubject.next({
+        message: '',
+        type: 0,
+      });
     }, 5000);
   }
 

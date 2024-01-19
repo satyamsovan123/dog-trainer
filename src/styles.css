@@ -43,18 +43,12 @@ body::before {
   height: 100%;
   /* background: url("assets/lines.svg") !important; */
   background: rgb(255, 255, 255);
-  background: linear-gradient(
+  /* background: linear-gradient(
     0deg,
     rgba(255, 255, 255, 0.7) 70%,
     rgba(142, 110, 53, 0.7) 90%
-  );
-
-  /* background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.8029586834733894) 0%,
-    rgba(195, 178, 148, 0) 50%,
-    rgba(142, 110, 53, 0.80015756302521) 100%
   ); */
+
   filter: blur(1px);
   opacity: 0.5;
   background-blend-mode: difference;

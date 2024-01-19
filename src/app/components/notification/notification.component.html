@@ -1,6 +1,6 @@
 <div
   class="toast-container bottom-0 start-50 translate-middle-x p-3"
-  *ngIf="notificationMessage"
+  *ngIf="notification.message"
 >
   <div
     data-bs-autohide="true"
@@ -12,7 +12,7 @@
     <div class="toast-header">
       <div class="d-flex align-items-center w-100 justify-content-between">
         <div class="toast-body">
-          {{ notificationMessage }}
+          {{ notification.message }}
         </div>
         <button
           (click)="clearNotification()"
