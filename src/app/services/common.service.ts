@@ -4,12 +4,16 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { PetProfile } from '../models/PetProfile.model';
 import { Notification } from '../models/Notification.model';
+import { AngularDeviceInformationService } from 'angular-device-information';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommonService {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private deviceInformationService: AngularDeviceInformationService
+  ) {}
 
   spinnerSubject = new BehaviorSubject<boolean>(false);
   spinnerSubject$ = this.spinnerSubject.asObservable();
@@ -35,8 +39,9 @@ export class CommonService {
   }
 
   updateNotificationSubject(notification: Notification) {
-    if (notification.type === 0) {
-      // return;
+    const os = this.getCurrentDeviceInformation();
+    if (notification.type === 0 && os === 'iOS') {
+      return;
     }
     this.notificationSubject.next(notification);
     setTimeout(() => {
@@ -88,5 +93,9 @@ export class CommonService {
     } catch (error) {
       this.logger(error);
     }
+  }
+
+  getCurrentDeviceInformation() {
+    return this.deviceInformationService.getDeviceInfo().os;
   }
 }

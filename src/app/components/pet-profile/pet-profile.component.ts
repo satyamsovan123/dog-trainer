@@ -6,7 +6,6 @@ import {
   IRowNode,
   RefreshCellsParams,
 } from 'ag-grid-community';
-import { AngularDeviceInformationService } from 'angular-device-information';
 import { BaseChartDirective } from 'ng2-charts';
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -86,8 +85,7 @@ export class PetProfileComponent {
   constructor(
     private commonService: CommonService,
     private backendService: BackendService,
-    private router: Router,
-    private deviceInformationService: AngularDeviceInformationService
+    private router: Router
   ) {
     this.onResize();
   }
