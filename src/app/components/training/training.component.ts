@@ -149,6 +149,7 @@ export class TrainingComponent implements OnInit {
       if (courseName === '3 Terrible Teens') {
         return;
       }
+      /** Hardcoding to ignore topic */
 
       if (course.courseName === courseName) {
         topics = course.topics;
@@ -328,8 +329,13 @@ export class TrainingComponent implements OnInit {
             this.lastTopicReadBackup = JSON.parse(
               JSON.stringify(this.lastTopicRead)
             );
-            this.onCourseChange(this.lastTopicRead.courseName);
-            this.onTopicChange(this.lastTopicRead.topic);
+            if (
+              this.lastTopicRead.courseName !== '' ||
+              this.lastTopicRead.topic !== ''
+            ) {
+              this.onCourseChange(this.lastTopicRead.courseName);
+              this.onTopicChange(this.lastTopicRead.topic);
+            }
           }
         },
         error: (error: any) => {
