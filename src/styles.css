@@ -18,10 +18,11 @@
 }
 
 * {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans", Ubuntu,
-    "Open Sans", "Helvetica Neue", sans-serif !important;
+  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, "Noto Sans", Ubuntu,
+    "Open Sans", "Helvetica Neue", sans-serif !important; */
+  font-family: "Quicksand", sans-serif;
   /* font-size: 15px !important; */
-  /* font-weight: 400 !important; */
+  font-weight: 500;
   /* font-variation-settings: "wght" 300, "wdth" 120; */
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;

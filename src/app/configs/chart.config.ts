@@ -10,8 +10,7 @@ export const DashboardChartConfiguration: ChartConfiguration['options'] = {
         text: 'Date (YYYY-MM-DD)',
         font: {
           size: 12,
-          family:
-            '-apple-system, BlinkMacSystemFont, "Inter", Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+          family: 'Quicksand, sans-serif',
         },
         color: '#000000',
         align: 'center',
@@ -23,8 +22,7 @@ export const DashboardChartConfiguration: ChartConfiguration['options'] = {
         color: '#000000',
         font: {
           size: 12,
-          family:
-            '-apple-system, BlinkMacSystemFont, "Inter", Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+          family: 'Quicksand, sans-serif',
         },
       },
       grid: {
@@ -39,8 +37,7 @@ export const DashboardChartConfiguration: ChartConfiguration['options'] = {
         text: 'Weight (KGs)',
         font: {
           size: 12,
-          family:
-            '-apple-system, BlinkMacSystemFont, "Inter", Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+          family: 'Quicksand, sans-serif',
         },
         color: '#000000',
         align: 'center',
@@ -51,8 +48,7 @@ export const DashboardChartConfiguration: ChartConfiguration['options'] = {
         color: '#000000',
         font: {
           size: 12,
-          family:
-            '-apple-system, BlinkMacSystemFont, "Inter", Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+          family: 'Quicksand, sans-serif',
         },
       },
       grid: {
@@ -67,8 +63,7 @@ export const DashboardChartConfiguration: ChartConfiguration['options'] = {
       labels: {
         font: {
           size: 12,
-          family:
-            '-apple-system, BlinkMacSystemFont, "Inter", Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+          family: 'Quicksand, sans-serif',
         },
       },
     },
@@ -79,8 +74,7 @@ export const DashboardChartConfiguration: ChartConfiguration['options'] = {
       color: '#000000',
       font: {
         size: 12,
-        family:
-          '-apple-system, BlinkMacSystemFont, "Inter", Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+        family: 'Quicksand, sans-serif',
       },
     },
     tooltip: {
@@ -91,13 +85,11 @@ export const DashboardChartConfiguration: ChartConfiguration['options'] = {
       bodyColor: '#000000',
       bodyFont: {
         size: 12,
-        family:
-          '-apple-system, BlinkMacSystemFont, "Inter", Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+        family: 'Quicksand, sans-serif',
       },
       titleFont: {
         size: 12,
-        family:
-          '-apple-system, BlinkMacSystemFont, "Inter", Helvetica, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+        family: 'Quicksand, sans-serif',
       },
       titleMarginBottom: 12,
     },
