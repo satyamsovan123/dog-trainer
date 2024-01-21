@@ -38,20 +38,20 @@ export class HomeComponent implements OnInit {
         gsap.from('.hero', {
           scale: 0,
           ease: 'expo.inOut',
-          animationDuration: 8,
+          animationDuration: 1,
           smoothOrigin: true,
-          animationDelay: 8,
-          transitionDelay: 8,
-          transitionDuration: 8,
+          animationDelay: 1,
+          transitionDelay: 1,
+          transitionDuration: 1,
           text: 'Pawfection!',
         });
         gsap.to('.hero', {
           scale: 1,
           ease: 'expo.inOut',
-          transitionDuration: 12,
+          transitionDuration: 2,
           smoothOrigin: true,
-          animationDelay: 12,
-          transitionDelay: 12,
+          animationDelay: 2,
+          transitionDelay: 2,
           text: 'Dog Trainer',
         });
       },

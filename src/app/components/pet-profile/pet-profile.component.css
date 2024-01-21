@@ -41,3 +41,8 @@ h3 {
 canvas {
   overflow-y: scroll;
 }
+
+.adult-weight {
+  margin-top: 1%;
+  font-weight: 600;
+}

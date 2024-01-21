@@ -142,16 +142,16 @@ export class TrainingComponent implements OnInit {
     this.subscriptions.push(subscription);
   }
 
-  getCourseTopics(courseName: string) {
+  getCourseTopics(topic: string) {
     let topics: string[] = [];
     this.courseDetails.forEach((course: CourseDetail) => {
       /** Hardcoding to ignore topic */
-      if (courseName === '3 Terrible Teens') {
+      if (topic === '3 Terrible Teens') {
         return;
       }
       /** Hardcoding to ignore topic */
 
-      if (course.courseName === courseName) {
+      if (course.courseName === topic) {
         topics = course.topics;
       }
     });
@@ -180,6 +180,7 @@ export class TrainingComponent implements OnInit {
     this.selectATopic = `Selected topic - ${this.sanitizeTopicName(topic)}`;
     this.html = '';
     this.lastTopicRead.topic = topic;
+
     this.getHTML(topic);
     if (
       JSON.stringify(this.lastTopicRead) !==

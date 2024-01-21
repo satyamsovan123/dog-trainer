@@ -40,7 +40,7 @@ export class PetProfileComponent {
     {
       headerName: 'Date (YYYY-MM-DD)',
       field: 'date',
-      flex: 0.3,
+      flex: 0.15,
       resizable: true,
       cellDataType: 'date',
       valueFormatter: this.dateFormatter,
@@ -49,7 +49,7 @@ export class PetProfileComponent {
     {
       headerName: 'Age',
       field: 'age',
-      flex: 0.4,
+      flex: 0.2,
       resizable: true,
       cellDataType: 'string',
       editable: false,
@@ -58,7 +58,7 @@ export class PetProfileComponent {
     {
       headerName: 'Weight (KGs)',
       field: 'weight',
-      flex: 0.3,
+      flex: 0.2,
       resizable: false,
       cellDataType: 'number',
       editable: true,
@@ -81,6 +81,7 @@ export class PetProfileComponent {
   };
   screenHeight: any;
   screenWidth: any;
+  adultPetWeight: string = '';
 
   constructor(
     private commonService: CommonService,
@@ -95,6 +96,7 @@ export class PetProfileComponent {
     this.getPetProfile();
     this.noRowsTemplate = `<span>Woof, woof! No data to show.</span>`;
     this.loadingTemplate = `<span>🐾 Loading...</span>`;
+    this.adultPetWeight = this.calculateAdultPetWeight();
   }
 
   generateForm() {
@@ -200,6 +202,7 @@ export class PetProfileComponent {
             row.age = this.ageFormatter({ data: row });
           });
           this.generateGraphData();
+          this.adultPetWeight = this.calculateAdultPetWeight();
         },
         error: (error: any) => {
           notification.type = 1;
@@ -280,6 +283,7 @@ export class PetProfileComponent {
     });
     this.gridApi.setGridOption('rowData', this.rowData);
     this.generateGraphData();
+    this.adultPetWeight = this.calculateAdultPetWeight();
   }
 
   onGridReady(params: GridReadyEvent<any>) {
@@ -296,6 +300,7 @@ export class PetProfileComponent {
       this.rowData = [];
     }
     this.generateGraphData();
+    this.adultPetWeight = this.calculateAdultPetWeight();
   }
 
   ageFormatter(params: any) {
@@ -356,6 +361,7 @@ export class PetProfileComponent {
 
   onCellEditingStopped(event: any) {
     this.generateGraphData();
+    this.adultPetWeight = this.calculateAdultPetWeight();
   }
 
   generateGraphData(): void {
@@ -406,5 +412,36 @@ export class PetProfileComponent {
     } else {
       return true;
     }
+  }
+
+  calculateAdultPetWeight() {
+    const petDetails = JSON.parse(localStorage.getItem('petProfile') ?? '{}');
+    const tempData: any = JSON.parse(JSON.stringify(this.rowData));
+    if (tempData.length === 0) {
+      return '';
+    }
+    tempData.sort(
+      (a: any, b: any) =>
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+    const petWeight = tempData[tempData.length - 1].weight;
+
+    const petAgeInWeeks: any = DateTime.fromJSDate(new Date())
+      .diff(DateTime.fromJSDate(new Date(petDetails.petDOB)), ['weeks'])
+      .toObject().weeks;
+
+    if (petAgeInWeeks >= 52) {
+      return '';
+    }
+
+    let finalWeight = (
+      Math.trunc((petWeight / petAgeInWeeks) * 52 * 100) / 100
+    ).toString();
+
+    if (finalWeight === 'NaN' || finalWeight === 'Infinity') {
+      finalWeight = '0';
+    }
+
+    return `Based on the details you shared, we expect ${petDetails.petName} to weigh approximately ${finalWeight} KGs after a year.`;
   }
 }
